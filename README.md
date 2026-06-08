@@ -6,6 +6,8 @@
 
 > Testboxed is a sort of standard for 2D games that specifies what the APIs and file formats should be, and how everything fits together. I developed it myself, as neither GameMaker nor Unity suited my needs.
 
+> Even it's mostly vibe-coded (made with help of AI), it's working stable, and I developed the engine's architecture myself.
+
 ## Features
 - Built-in debug mode overlay (F3)
 - Dynamic C# script compilation (like Unity)
