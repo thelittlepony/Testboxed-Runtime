@@ -1,0 +1,8 @@
+/obj
+/bin
+/artifacts
+/.dotnet
+/.dotnet_home
+/tools
+*.zip
+/com.tobyfox.deltarune.chapter1_port
