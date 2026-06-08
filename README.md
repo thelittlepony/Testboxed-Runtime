@@ -18,6 +18,8 @@
 - Built-in UI API - `ru.tlpteam.tb.UI`
 
 ## How to run
+Requires .NET 10 to run.
+
 ```
 dotnet run -- <ABSOLUTE_OR_RELATIVE_PROJECT_PATH> --initial-scene SceneName
 ```
