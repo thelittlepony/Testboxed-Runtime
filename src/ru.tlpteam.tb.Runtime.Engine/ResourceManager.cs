@@ -201,6 +201,11 @@ namespace ru.tlpteam.tb.Runtime.Engine
             return defaultValue;
         }
 
+        private class TlpNoScript : TestboxedScriptForObject
+        {
+            public override void Start() {}
+        }
+
         public TestboxedScriptForObject? CreateObject(string type, float x, float y)
         {
             string objPath = Path.Combine(_projectRoot, "Objects", $"{type}.json");
@@ -213,20 +218,30 @@ namespace ru.tlpteam.tb.Runtime.Engine
             var objData = JObject.Parse(File.ReadAllText(objPath));
             string className = objData["BaseClassInScripts"]?.ToString() ?? "";
 
-            // Resolve script type from the compiled scripts assembly.
-            Type? t = _scriptsAssembly.GetType($"ru.tlpteam.tb.CustomScripts.{className}") ??
-                      _scriptsAssembly.GetTypes().FirstOrDefault(x => x.Name == className);
+            TestboxedScriptForObject? script;
 
-            if (t == null)
+            // Если имя класса пустое — создаем чистый базовый объект
+            if (string.IsNullOrWhiteSpace(className))
             {
-                TlpLogging.Error($"Class {className} not found in scripts!");
-                return null;
+                script = new TlpNoScript(); 
+            }
+            else
+            {
+                // Ищем класс, если он прописан
+                Type? t = _scriptsAssembly.GetType($"ru.tlpteam.tb.CustomScripts.{className}") ??
+                        _scriptsAssembly.GetTypes().FirstOrDefault(x => x.Name == className);
+
+                if (t == null)
+                {
+                    TlpLogging.Error($"Class {className} not found in scripts!");
+                    return null;
+                }
+
+                script = (TestboxedScriptForObject?)Activator.CreateInstance(t);
+                if (script == null) return null;
             }
 
-            var script = (TestboxedScriptForObject?)Activator.CreateInstance(t);
-            if (script == null) return null;
-
-            // Attach texture sprite or placeholder sprite.
+            // Общая логика настройки для любого типа объекта
             SetupSprite(script, objData);
             SetupPhysics(script, objData);
             SetupRenderProperties(script, objData);
