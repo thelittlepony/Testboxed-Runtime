@@ -8,6 +8,8 @@
 
 > Even it's mostly vibe-coded (made with help of AI), it's working stable, and I developed the engine's architecture myself.
 
+> And I say one thing, just for fun: Testboxed Runtime is partially inspired by Deltarune and OneShot, not only because of the deeper meaning behind these games, but also because of their top-down movement and simple graphics style.
+
 ## Features
 - Built-in debug mode overlay (F3)
 - Dynamic C# script compilation (like Unity)
