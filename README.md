@@ -28,6 +28,12 @@ dotnet run -- <ABSOLUTE_OR_RELATIVE_PROJECT_PATH> --initial-scene SceneName
 
 You can look on example/demo projects for this engine [here](https://github.com/thelittlepony/Testboxed-Examples).
 
+## Building for other
+Linux ARM64:
+```
+dotnet build ru.tlpteam.tb.Runtime.csproj -c Release -r linux-arm64 --self-contained true -p:PlatformTarget=AnyCPU
+```
+
 ## Screenshots
 <p align="center">
   <img src="./ReadmeAssets/Demo_Kris.png" alt="Demo with Kris dancing, and debug overlay" width="700">
