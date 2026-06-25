@@ -34,13 +34,7 @@ jobs:
         run: dotnet restore ru.tlpteam.tb.Runtime.csproj
 
       - name: Publish ${{ matrix.rid }}
-        run: |
-          dotnet publish ru.tlpteam.tb.Runtime.csproj \
-            -c Release \
-            -r ${{ matrix.rid }} \
-            --self-contained true \
-            -p:PlatformTarget=AnyCPU \
-            -o out/${{ matrix.rid }}
+        run: dotnet publish ru.tlpteam.tb.Runtime.csproj -c Release -r ${{ matrix.rid }} --self-contained true -p:PlatformTarget=AnyCPU -o out/${{ matrix.rid }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
