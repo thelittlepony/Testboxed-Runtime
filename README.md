@@ -28,6 +28,18 @@ dotnet run -- <ABSOLUTE_OR_RELATIVE_PROJECT_PATH> --initial-scene SceneName
 
 You can look on example/demo projects for this engine [here](https://github.com/thelittlepony/Testboxed-Examples).
 
+## Runtime modes
+Reference:
+- [TestboxedEngine.Run](https://github.com/thelittlepony/Testboxed-Runtime/blob/main/src/ru.tlpteam.tb.Runtime.Engine/TestboxedEngine.cs#L84)
+- [GenocideRouteEngine.Run](https://github.com/thelittlepony/Testboxed-Runtime/blob/main/src/ru.tlpteam.tb.Runtime.Engine/GenocideRouteEngine.cs#L101)
+- [WhiteSpaceEngine.Run](https://github.com/thelittlepony/Testboxed-Runtime/blob/main/src/ru.tlpteam.tb.Runtime.Engine/WhiteSpaceEngine.cs#L101)
+
+| Mode | Rendering | Logic | Audio |
+| :--- | :--- | :--- | :--- |
+| TestboxedEngine | Main | Main | Main |
+| GenocideRouteEngine | Main | Thread 1 | Thread 2 |
+| WhiteSpaceEngine | Off (Dummy) | Main | Off |
+
 ## Building for other
 Linux ARM64:
 ```
