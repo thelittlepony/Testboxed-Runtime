@@ -1,3 +1,4 @@
+using Microsoft.CodeAnalysis;
 using Newtonsoft.Json.Linq;
 using ru.tlpteam.Debug;
 using ru.tlpteam.tb.Runtime.Engine;
@@ -19,26 +20,35 @@ class Program
         var initialSceneOption = new Option<string?>("--initial-scene")
         {
             Description = "Initial scene name to load",
-            Required = true
+            Required = false,
+            DefaultValueFactory =  _ => "Main"
+        };
+
+        var runtimeModeOption = new Option<string?>("--runtime-mode")
+        {
+            Description = "Runtime mode (TestboxedEngine/GenocideRouteEngine/WhiteSpaceEngine)",
+            Required = true,
+            DefaultValueFactory =  _ => "TestboxedEngine"
         };
 
         var rootCommand = new RootCommand("TestboxedEngine Runtime")
         {
             Arguments = { projectPathArgument },
-            Options = { initialSceneOption }
+            Options = { initialSceneOption, runtimeModeOption }
         };
 
         rootCommand.SetAction(parseResult => RunEngine(
             parseResult.GetValue(projectPathArgument)!,
-            parseResult.GetValue(initialSceneOption)!
+            parseResult.GetValue(initialSceneOption)!,
+            parseResult.GetValue(runtimeModeOption)!
         ));
 
         return rootCommand.Parse(args).Invoke();
     }
 
-    private static void RunEngine(string projectPath, string initialSceneName)
+    private static void RunEngine(string projectPath, string initialSceneName, string runtimeMode)
     {
-        TlpLogging.Info("Starting TestboxedEngine Runtime.");
+        TlpLogging.Info("Starting Testboxed Runtime.");
 
         try
         {
@@ -65,19 +75,58 @@ class Program
             if (loader.CompiledAssembly == null)
                 throw new InvalidOperationException("Failed to compile the project scripts.");
 
+            IWindowProvider windowProvider;
+
             // Create the window provider.
-            var windowProvider = new SFMLWindowProvider(
-                windowWidth,
-                windowHeight,
-                title,
-                renderScale,
-                viewportWidth,
-                viewportHeight);
+            if (runtimeMode == "WhiteSpaceEngine") {
+                windowProvider = new DummyWindowProvider(
+                    windowWidth,
+                    windowHeight);
+            }
+            else
+            {
+                windowProvider = new SFMLWindowProvider(
+                    windowWidth,
+                    windowHeight,
+                    title,
+                    renderScale,
+                    viewportWidth,
+                    viewportHeight);
+            }
 
             // Start the engine with the asset path and window provider.
-            var engine = new TestboxedEngine(loader.CompiledAssembly, projectPath, windowProvider);
-            TlpLogging.Info("Starting TestboxedEngine...");
-            engine.Run(initialSceneName);
+            TlpLogging.Info($"Starting Testboxed Runtime, mode: {runtimeMode}");
+            TlpLogging.Info("- config start");
+            TlpLogging.Info(config);
+            TlpLogging.Info("- config end");
+            if (runtimeMode == "TestboxedEngine")
+            {
+                var engine = new TestboxedEngine(loader.CompiledAssembly, projectPath, windowProvider);
+                TlpLogging.Info("Program.RunEngine -> engine.Run");
+                engine.Run(initialSceneName);
+            }
+            else if (runtimeMode == "GenocideRouteEngine")
+            {
+                TlpLogging.Warning("Please note:");
+                TlpLogging.Warning("");
+                TlpLogging.Warning("You are running an experimental version of TestboxedEngine with multithreading support.");
+                TlpLogging.Warning("We cannot guarantee the stability of this implementation.");
+                TlpLogging.Warning("");
+                TlpLogging.Warning("If you encounter any issues, report it in repository: https://github.com/thelittlepony/Testboxed-Runtime");
+                var engine = new GenocideRouteEngine(loader.CompiledAssembly, projectPath, windowProvider);
+                TlpLogging.Info("Program.RunEngine -> engine.Run");
+                engine.Run(initialSceneName);
+            }
+            else if (runtimeMode == "WhiteSpaceEngine")
+            {
+                var engine = new WhiteSpaceEngine(loader.CompiledAssembly, projectPath, windowProvider);
+                TlpLogging.Info("Program.RunEngine -> engine.Run");
+                engine.Run(initialSceneName);
+            }
+            else
+            {
+                throw new ArgumentException($"Invalid runtime mode: {runtimeMode}. Read --help to select correct mode.");
+            }
         }
         catch (Exception ex)
         {
