@@ -19,6 +19,9 @@
 - Input API - `ru.tlpteam.Input`, and i know it's still called ru.tlpteam.TlpInput in folders, don't ask why
 - Built-in UI API - `ru.tlpteam.tb.UI`
 
+## How to use
+You can view documentation [here](https://docs-tb.thelittlepony.ru/Introduction/Welcome/)
+
 ## How to run
 Requires .NET 10 to run.
 
